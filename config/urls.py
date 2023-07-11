@@ -16,8 +16,20 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework.routers import SimpleRouter
+
+from category.views import CategoryViewSet
+from posts.views import PostViewSet
+
+router = SimpleRouter()
+router.register('categories', CategoryViewSet)
+router.register('posts', PostViewSet)
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/accounts/', include('account.urls')),
+    path('api/v1/', include(router.urls)),
+    path('api/v1/password_reset/', include('django_rest_passwordreset.urls', namespace='password_reset')),
+
 ]
