@@ -1,5 +1,5 @@
 from rest_framework import generics, permissions
-from posts.permissions import IsAuthorOrAdminOrPostOwner
+from posts.permissions import IsAuthorOrAdmin
 from .models import Comment
 from . import serializers
 
@@ -18,5 +18,5 @@ class CommentDetailView(generics.RetrieveDestroyAPIView):
 
     def get_permissions(self):
         if self.request.method == 'DELETE':
-            return [IsAuthorOrAdminOrPostOwner(), ]
+            return [IsAuthorOrAdmin(), ]
         return [permissions.AllowAny(), ]
