@@ -29,6 +29,7 @@ class CustomUser(AbstractUser):
             "Unselect this instead of deleting account."
         ),
     )
+    is_seller = models.BooleanField(default=False)
 
     objects = UserManager()
     USERNAME_FIELD = 'email'
