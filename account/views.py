@@ -83,6 +83,7 @@ class UserViewSet(ListModelMixin, GenericViewSet):
         except User.DoesNotExist:
             return Response({'msg': 'Invalid link or link expired!'}, status=400)
         user.is_active = True
+        user.is_buyer = True
         user.activation_code = ''
         user.save()
         return Response({'msg': 'Successfully activated!'}, status=200)
@@ -107,6 +108,7 @@ class UserViewSet(ListModelMixin, GenericViewSet):
         except User.DoesNotExist:
             return Response({'msg': 'Invalid link or link expired!'}, status=400)
         user.is_active = True
+        user.is_staff = True
         user.is_seller = True
         user.activation_code = ''
         user.save()
