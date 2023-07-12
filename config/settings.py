@@ -51,8 +51,9 @@ INSTALLED_APPS = [
     'comment',
     'like',
     'posts',
-    'orders',
+    'purchase',
     'rating',
+    'news',
 ]
 
 MIDDLEWARE = [

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from orders.models import Order
+from purchase.models import Purchase
 
 
 class OrderUserSerializer(serializers.ModelSerializer):
@@ -8,5 +8,5 @@ class OrderUserSerializer(serializers.ModelSerializer):
     owner_username = serializers.ReadOnlyField(source='owner.username')
 
     class Meta:
-        model = Order
+        model = Purchase
         fields = '__all__'

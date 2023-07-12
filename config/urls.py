@@ -3,12 +3,12 @@ from rest_framework.routers import SimpleRouter
 
 from category.views import CategoryViewSet
 from posts.views import PostViewSet
-from orders.views import OrderCreateView
+from purchase.views import PurchaseCreateView
 
 router = SimpleRouter()
 router.register('categories', CategoryViewSet)
 router.register('posts', PostViewSet)
-# router.register('orders', OrderCreateView)
+# router.register('purchase', OrderCreateView)
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path, include, re_path
@@ -19,7 +19,7 @@ from drf_yasg import openapi
 schema_view = get_schema_view(
 
     openapi.Info(
-        title="Blog API",
+        title="Epic Games API",
         default_version='v1',
         description="Test restfull API",
         terms_of_service="https://www.google.com/policies/terms/",
@@ -38,7 +38,8 @@ urlpatterns = [
     path('api/v1/accounts/', include('account.urls')),
     path('api/v1/', include(router.urls)),
     path('api/v1/password_reset/', include('django_rest_passwordreset.urls', namespace='password_reset')),
-    path('api/v1/orders/', OrderCreateView.as_view()),
+    path('api/v1/purchase/', PurchaseCreateView.as_view()),
+    path('api/v1/rating/', include('rating.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

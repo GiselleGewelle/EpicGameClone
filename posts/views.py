@@ -23,11 +23,7 @@ class PostViewSet(ModelViewSet):
             return [IsAuthorOrAdmin(), ]
         elif self.action in ('update', 'partial_update'):
             return [IsAuthor(), ]
-<<<<<<< HEAD
-        return [permissions.IsAuthenticatedOrReadOnly(), ]
-
-=======
         elif self.action == 'create':
             return [IsSeller(), ]
         return [IsBuyer(), ]
->>>>>>> cfe1ff339981fd4d4db7fd79f3641866c653f889
+
