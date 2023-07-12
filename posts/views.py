@@ -4,7 +4,7 @@ from rest_framework.decorators import action
 
 from .models import Post
 from . import serializers
-from .permissions import IsAuthor, IsAuthorOrAdmin, IsSeller
+from .permissions import IsAuthor, IsAuthorOrAdmin, IsSeller, IsBuyer
 
 
 class PostViewSet(ModelViewSet):
@@ -25,4 +25,4 @@ class PostViewSet(ModelViewSet):
             return [IsAuthor(), ]
         elif self.action == 'create':
             return [IsSeller(), ]
-        return [permissions.IsAuthenticatedOrReadOnly(), ]
+        return [IsBuyer(), ]
