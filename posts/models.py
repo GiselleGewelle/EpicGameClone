@@ -18,6 +18,7 @@ class Post(models.Model):
     price = models.DecimalField(max_digits=12, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    link = models.URLField()
 
     def __str__(self):
         return self.title

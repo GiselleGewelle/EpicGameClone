@@ -19,8 +19,9 @@ class PostViewSet(ModelViewSet):
         return serializers.PostSerializer
 
     def get_permissions(self):
-        if self.action == ('destroy', 'post'):
+        if self.action == 'destroy':
             return [IsAuthorOrAdmin(), ]
         elif self.action in ('update', 'partial_update'):
             return [IsAuthor(), ]
         return [permissions.IsAuthenticatedOrReadOnly(), ]
+
