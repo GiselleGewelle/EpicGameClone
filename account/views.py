@@ -64,7 +64,7 @@ class UserViewSet(ListModelMixin, GenericViewSet):
     serializer_class = serializers.UserSerializer
     permission_classes = (AllowAny,)
 
-    @swagger_auto_schema
+    @swagger_auto_schema(request_body=serializers.RegisterSerializer)
     @action(['POST'], detail=False)
     def register(self, request, *args, **kwargs):
         serializer = serializers.RegisterSerializer(data=request.data)
