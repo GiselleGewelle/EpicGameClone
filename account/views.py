@@ -6,6 +6,7 @@ from rest_framework.viewsets import GenericViewSet
 from rest_framework.mixins import ListModelMixin
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from drf_yasg.utils import swagger_auto_schema
 
 from account import serializers
 from account.send_mail import send_confirmation_email, send_confirmation_seller_email
@@ -63,6 +64,7 @@ class UserViewSet(ListModelMixin, GenericViewSet):
     serializer_class = serializers.UserSerializer
     permission_classes = (AllowAny,)
 
+    @swagger_auto_schema(request_body=serializers.RegisterSerializer)
     @action(['POST'], detail=False)
     def register(self, request, *args, **kwargs):
         serializer = serializers.RegisterSerializer(data=request.data)

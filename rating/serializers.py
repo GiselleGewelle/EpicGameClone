@@ -23,3 +23,5 @@ class MarkSerializer(serializers.ModelSerializer):
         return attrs
 
 
+from rest_framework import serializers
+from .models import Mark
