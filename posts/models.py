@@ -31,17 +31,8 @@ class Post(models.Model):
     link_on_instagram = models.URLField(blank=True)
     link_on_twitter = models.URLField(blank=True)
     link_on_facebook = models.URLField(blank=True)
-    slug = models.SlugField(max_length=50, primary_key=True, default=None)
     video = models.FileField(upload_to='videos', default=None)
-
-    # class PostItem(models.Model):
-    #     category = models.ForeignKey(Post, related_name='items', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.title_of_game
 
-
-@receiver(pre_save, sender=Post)
-def category_slug_save(sender, instance, *args, **kwargs):
-    if not instance.slug:
-        instance.slug = slugify(instance.title_of_game)

@@ -9,8 +9,8 @@ class PostListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = (
-            'owner', 'owner_email', 'title_of_game', 'price', 'date_of_issue', 'image_for_full', 'link_on_game',
-            'slug', 'video')
+            'id', 'owner', 'owner_email', 'title_of_game', 'price', 'date_of_issue', 'image_for_full', 'link_on_game',
+            'video')
 
 
 class PostSerializer(serializers.ModelSerializer):
