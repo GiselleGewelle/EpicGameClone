@@ -37,11 +37,9 @@ urlpatterns = [
     re_path(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path('admin/', admin.site.urls),
     path('api/v1/accounts/', include('account.urls')),
-    # path('api/v1/posts/', include('posts.urls')),
     path('api/v1/', include(router.urls)),
     path('api/v1/password_reset/', include('django_rest_passwordreset.urls', namespace='password_reset')),
     path('api/v1/purchase/', PurchaseCreateView.as_view()),
-    path('api/v1/rating/', include('rating.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

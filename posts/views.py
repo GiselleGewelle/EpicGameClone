@@ -1,25 +1,11 @@
 from rest_framework.viewsets import ModelViewSet
 from rest_framework import permissions, response
 from rest_framework.decorators import action
-
 from .models import Post
 from . import serializers
 from .permissions import IsAuthor, IsAuthorOrAdmin, IsSeller, IsBuyer
 from rest_framework.response import Response
 from rating.serializers import MarkSerializer
-from rating.models import Mark
-
-from django.shortcuts import get_object_or_404
-from rest_framework.views import APIView
-from rest_framework.response import Response
-
-
-# class PostDeleteView(APIView):
-#     def delete(self, request, slug):
-#         my_model = get_object_or_404(Post, slug=slug)
-#         my_model.delete()
-#         return Response("Object deleted successfully.")
-
 
 class PostViewSet(ModelViewSet):
     queryset = Post.objects.all()
@@ -32,23 +18,29 @@ class PostViewSet(ModelViewSet):
             return serializers.PostListSerializer
         return serializers.PostSerializer
 
-    @action(methods=['POST'], detail=True)
+    @action(methods=['POST', 'GET'], detail=True)
     def rating(self, request, pk):
-        product = self.get_object()
+        post = self.get_object()
         if request.method == 'GET':
-            marks = product.marks.all()
+            marks = post.marks.all()
             serializer = MarkSerializer(marks, many=True).data
             return response.Response(serializer, status=200)
-        else:
-            if product.marks.filter(user=request.user).exists():
-                return response.Response('You already marked this product!',
+        elif post.marks.filter(owner=request.user).exists():
+                return response.Response('You already marked this post!',
                                          status=400)
-            data = request.data  # rating text
-            serializer = MarkSerializer(data=data)
-            serializer.is_valid(raise_exception=True)
-            serializer.save(user=request.user, product=product)
-            return response.Response(serializer.data, status=201)
-
+        elif request.method == 'POST':
+            Mark.objects.create(owner=request.user, mark=request.data['mark'], post=post)
+            return response.Response({'msg': 'Thank you for your mark'}, status=201)
+    @action(['DELETE'], detail=True)
+    def rating_delete(self, request, pk):
+        post = self.get_object()  # Product.objects.get(id=pk)
+        user = request.user
+        if not post.marks.filter(owner=user).exists():
+            return response.Response('You didn\'t marked this post!',
+                                     status=400)
+        mark = post.marks.get(owner=user)
+        mark.delete()
+        return response.Response('Successfully deleted', status=204)
 
 
     def get_permissions(self):
