@@ -12,7 +12,6 @@ from django.core.mail import send_mail
 from .managers import UserManager
 
 
-
 class CustomUser(AbstractUser):
     email = models.EmailField('email adress', unique=True)
     password = models.CharField(max_length=255)

@@ -41,7 +41,7 @@ class Post(models.Model):
         return self.title_of_game
 
 
-@receiver(pre_save, sender=Post)
-def category_slug_save(sender, instance, *args, **kwargs):
-    if not instance.slug:
-        instance.slug = slugify(instance.title_of_game)
+# @receiver(pre_save, sender=Post)
+# def category_slug_save(sender, instance, *args, **kwargs):
+#     if not instance.slug:
+#         instance.slug = slugify(instance.title_of_game)
