@@ -9,6 +9,17 @@ from rest_framework.response import Response
 from rating.serializers import MarkSerializer
 from rating.models import Mark
 
+from django.shortcuts import get_object_or_404
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
+
+# class PostDeleteView(APIView):
+#     def delete(self, request, slug):
+#         my_model = get_object_or_404(Post, slug=slug)
+#         my_model.delete()
+#         return Response("Object deleted successfully.")
+
 
 class PostViewSet(ModelViewSet):
     queryset = Post.objects.all()
@@ -47,5 +58,7 @@ class PostViewSet(ModelViewSet):
             return [IsAuthor(), ]
         elif self.action == 'create':
             return [IsSeller(), ]
+        elif self.action == 'list':
+            return [permissions.AllowAny(), ]
         return [IsBuyer(), ]
 
