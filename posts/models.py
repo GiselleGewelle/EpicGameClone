@@ -11,7 +11,6 @@ User = get_user_model()
 
 
 class Post(models.Model):
-    # id = models.CharField(primary_key=True, max_length=20,default=0,)
     owner = models.ForeignKey(User, on_delete=models.RESTRICT,
                               related_name='posts', default=None)
     title_of_game = models.CharField(max_length=150)
