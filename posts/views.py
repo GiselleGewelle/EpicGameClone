@@ -6,6 +6,9 @@ from . import serializers
 from .permissions import IsAuthor, IsAuthorOrAdmin, IsSeller, IsBuyer
 from rest_framework.response import Response
 from rating.serializers import MarkSerializer
+from purchase.models import Purchase
+from purchase.serializers import PurchaseSerializer
+from rating.models import Mark
 
 class PostViewSet(ModelViewSet):
     queryset = Post.objects.all()
@@ -41,6 +44,20 @@ class PostViewSet(ModelViewSet):
         mark = post.marks.get(owner=user)
         mark.delete()
         return response.Response('Successfully deleted', status=204)
+
+    @action(['POST', 'GET'], detail=True)
+    def purchase(self, request, pk):
+        post = self.get_object()
+        if request.method == 'GET':
+            purchase = post.purchase.all()
+            serializer = PurchaseSerializer(purchase, many=True).data
+            return response.Response(serializer, status=200)
+        elif post.purchase.filter(owner=request.user).exists():
+            return response.Response('You already purchased this game!',
+                                     status=400)
+        elif request.method == 'POST':
+            Purchase.objects.create(owner=request.user, post=post)
+            return response.Response({'msg': 'Thank you for your purchase'}, status=201)
 
 
     def get_permissions(self):

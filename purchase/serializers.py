@@ -3,7 +3,7 @@ from rest_framework import serializers
 from purchase.models import Purchase
 
 
-class OrderUserSerializer(serializers.ModelSerializer):
+class PurchaseSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.id')
     owner_username = serializers.ReadOnlyField(source='owner.username')
 
