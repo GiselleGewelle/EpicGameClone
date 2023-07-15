@@ -1,4 +1,6 @@
 from django_filters.rest_framework import DjangoFilterBackend
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework.filters import SearchFilter
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.viewsets import ModelViewSet
@@ -23,12 +25,14 @@ class StandartResultPagination(PageNumberPagination):
     page_size = 3
     page_query_param = 'page'
 
+
 from rating.serializers import MarkSerializer
 from purchase.models import Purchase
 from purchase.serializers import PurchaseSerializer
 from rating.models import Mark
 
-class PostViewSet(ModelViewSet):
+
+class PostViewSet(ModelViewSet, ):
     queryset = Post.objects.all()
     pagination_class = StandartResultPagination
     filter_backends = (DjangoFilterBackend, SearchFilter)
@@ -51,13 +55,14 @@ class PostViewSet(ModelViewSet):
             serializer = MarkSerializer(marks, many=True).data
             return response.Response(serializer, status=200)
         elif post.marks.filter(owner=request.user).exists():
-                return response.Response('You already marked this post!',
-                                         status=400)
+            return response.Response('You already marked this post!',
+                                     status=400)
         elif request.method == 'POST':
             Mark.objects.create(owner=request.user, mark=request.data['mark'], post=post)
             return response.Response({'msg': 'Thank you for your mark'}, status=201)
+
     @action(['DELETE'], detail=True)
-    def rating_delete(self, request, pk):
+    def rating_delete(self, request, pk=None):
         post = self.get_object()  # Product.objects.get(id=pk)
         user = request.user
         if not post.marks.filter(owner=user).exists():
@@ -81,7 +86,6 @@ class PostViewSet(ModelViewSet):
             Purchase.objects.create(owner=request.user, post=post)
             return response.Response({'msg': 'Thank you for your purchase'}, status=201)
 
-
     def get_permissions(self):
         if self.action == 'destroy':
             return [IsAuthorOrAdmin(), ]
@@ -93,6 +97,15 @@ class PostViewSet(ModelViewSet):
             return [permissions.AllowAny(), ]
         return [IsBuyer(), ]
 
+    @action(detail=True, methods=['GET'])
+    def delete_like(self, request, pk):
+        post = self.get_object()
+        user = request.user
+        like_obj, created = Likes.objects.get_or_create(post=post, user=user)
+
+        like_obj.is_liked = not like_obj.is_liked
+        like_obj.delete()
+        return Response('like deleted')
 
     @action(detail=True, methods=['GET'])
     def toggle_like(self, request, pk):
@@ -104,8 +117,11 @@ class PostViewSet(ModelViewSet):
         like_obj.save()
         return Response('like toggled')
 
+    # @swagger_auto_schema(manual_parameters=[
+    #     openapi.Parameter('likes_from', openapi.IN_QUERY, 'filter products by amount of likes', True,
+    #                       type=openapi.TYPE_INTEGER)])
     @action(detail=False, methods=["GET"])
-    def likes(self, request, pk=None):
+    def likes(self, request, pk):
         from django.db.models import Count
         q = request.query_params.get("likes_from")  # request.query_params = request.GET
         queryset = self.get_queryset()
@@ -118,11 +134,50 @@ class PostViewSet(ModelViewSet):
         return {'request': self.request}
 
     @action(detail=True, methods=['GET'])
-    def toggle_favorites(self, request, pk):
+    def delete_favorite(self, request, pk):
+        post = self.get_object()
+        user = request.user
+        fav, created = Favorite.objects.get_or_create(post=post, user=user)
+
+        fav.favorite = not fav.favorite
+        fav.delete()
+        return Response('favourite deleted')
+
+    @action(detail=True, methods=['GET'])
+    def toggle_favorite(self, request, pk):
         post = self.get_object()
         user = request.user
         fav, created = Favorite.objects.get_or_create(post=post, user=user)
 
         fav.favorite = not fav.favorite
         fav.save()
-        return Response('favourite toggled')
+        return Response('favorite toggled')
+
+    # @action(['GET', 'POST'], detail=True)
+    # def reviews(self, request, pk):
+    #     product = self.get_object()
+    #     if request.method == 'GET':
+    #         reviews = product.reviews.all()
+    #         serializer = MarkActionSerializer(reviews, many=True).data
+    #         return response.Response(serializer, status=200)
+    #     else:
+    #         if product.reviews.filter(user=request.user).exists():
+    #             return response.Response('You already reviewed this product!',
+    #                                      status=400)
+    #         data = request.data  # rating text
+    #         serializer = MarkActionSerializer(data=data)
+    #         serializer.is_valid(raise_exception=True)
+    #         serializer.save(user=request.user, product=product)
+    #         return response.Response(serializer.data, status=201)
+    #
+    # # api/v1/product/id/
+    # @action(['DELETE'], detail=True)
+    # def review_delete(self, request, pk):
+    #     product = self.get_object()  # Product.objects.get(id=pk)
+    #     user = request.user
+    #     if not product.reviews.filter(user=user).exists():
+    #         return response.Response('You didn\'t reviewed this product!',
+    #                                  status=400)
+    #     review = product.reviews.get(user=user)
+    #     review.delete()
+    #     return response.Response('Successfully deleted', status=204)
