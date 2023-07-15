@@ -3,7 +3,6 @@ from rest_framework.routers import SimpleRouter
 
 from category.views import CategoryViewSet
 from posts.views import PostViewSet
-from purchase.views import PurchaseCreateView
 
 router = SimpleRouter()
 router.register('categories', CategoryViewSet)
@@ -39,7 +38,6 @@ urlpatterns = [
     path('api/v1/accounts/', include('account.urls')),
     path('api/v1/', include(router.urls)),
     path('api/v1/password_reset/', include('django_rest_passwordreset.urls', namespace='password_reset')),
-    path('api/v1/purchase/', PurchaseCreateView.as_view()),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
