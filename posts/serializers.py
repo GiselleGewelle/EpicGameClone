@@ -5,7 +5,8 @@ from category.models import Category
 from comment.serializers import CommentSerializer
 from posts.models import Post, PostImages
 from rating.models import Mark
-
+from purchase.models import Purchase
+from django.db.models import Sum
 
 class PostImageSerializer(serializers.ModelSerializer):
     class Meta:
@@ -45,6 +46,11 @@ class PostSerializer(serializers.ModelSerializer):
         repr['comments_count'] = instance.comments.count()
         repr['comments'] = CommentSerializer(instance.comments.all(), many=True).data
         repr['likes_count'] = instance.likes.count()
+        repr['marks_count'] = instance.marks.count()
+        marks_count = instance.marks.count()
+        total_marks = instance.marks.aggregate(total=Sum('mark'))['total']
+        repr['rating'] = total_marks / marks_count
+        repr['purchase_count'] = instance.purchase.count()
         user = self.context['request'].user
         if user.is_authenticated:
             repr['is_liked'] = user.likes.filter(post=instance).exists()
