@@ -4,6 +4,7 @@ from rest_framework import serializers
 from category.models import Category
 from comment.serializers import CommentSerializer
 from posts.models import Post, PostImages
+from rating.models import Mark
 
 
 class PostImageSerializer(serializers.ModelSerializer):
@@ -39,30 +40,6 @@ class PostSerializer(serializers.ModelSerializer):
             PostImages.objects.create(image=image, post=post)
         return post
 
-    #
-    # class PostImageSerializer(serializers.ModelSerializer):
-    #     class Meta:
-    #         model = PostImages
-    #         fields = '__all__'
-    #
-    #
-    # class PostCreateSerializer(serializers.ModelSerializer):
-    #     category = serializers.PrimaryKeyRelatedField(required=True, queryset=Category.objects.all())
-    #     owner = serializers.ReadOnlyField(source='owner.id')
-    #     images = PostImageSerializer(many=True, required=False)
-    #
-    #     class Meta:
-    #         model = Post
-    #         fields = '__all__'
-    #
-    #     def create(self, validated_data):
-    #         request = self.context.get('request')
-    #         images = request.FILES.getlist('images')
-    #         post = Post.objects.create(**validated_data)
-    #         for image in images:
-    #             PostImages.objects.create(image=image, post=post)
-    #         return post
-
     def to_representation(self, instance):
         repr = super().to_representation(instance)
         repr['comments_count'] = instance.comments.count()
@@ -85,3 +62,6 @@ class FavoriteListSerializer(serializers.ModelSerializer):
         repr["author"] = instance.author.email
         repr["category"] = instance.category.title
         return repr
+
+
+
