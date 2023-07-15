@@ -45,11 +45,11 @@ INSTALLED_APPS = [
     'drf_yasg',
     'django_filters',
     'django_rest_passwordreset',
+    'ckeditor',
     # my_apps
     'account',
     'category',
     'comment',
-    'like',
     'posts',
 ]
 
