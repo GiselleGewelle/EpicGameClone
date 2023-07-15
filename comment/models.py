@@ -4,6 +4,8 @@ from posts.models import Post
 
 
 class Comment(models.Model):
+    owner = models.ForeignKey('account.CustomUser', related_name='comments', on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, related_name='comments', on_delete=models.CASCADE)
     owner = models.ForeignKey('account.CustomUser', related_name='comments',
                               on_delete=models.CASCADE)
     post = models.ForeignKey(Post, related_name='comments',
@@ -12,4 +14,5 @@ class Comment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
+        return f'{self.owner} -> {self.post}'
         return f'{self.owner} -> {self.post}'

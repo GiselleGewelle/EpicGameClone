@@ -31,9 +31,7 @@ class Post(models.Model):
     link_on_instagram = models.URLField(blank=True)
     link_on_twitter = models.URLField(blank=True)
     link_on_facebook = models.URLField(blank=True)
-    # slug = models.SlugField(max_length=50, primary_key=True, default=None)
     video = models.FileField(upload_to='videos', default=None)
 
     def __str__(self):
         return self.title_of_game
-
