@@ -15,11 +15,6 @@ from rest_framework.response import Response
 from .serializers import PostSerializer
 
 
-# class PostDeleteView(APIView):
-#     def delete(self, request, slug):
-#         my_model = get_object_or_404(Post, slug=slug)
-#         my_model.delete()
-#         return Response("Object deleted successfully.")
 
 class StandartResultPagination(PageNumberPagination):
     page_size = 3
@@ -152,32 +147,3 @@ class PostViewSet(ModelViewSet, ):
         fav.favorite = not fav.favorite
         fav.save()
         return Response('favorite toggled')
-
-    # @action(['GET', 'POST'], detail=True)
-    # def reviews(self, request, pk):
-    #     product = self.get_object()
-    #     if request.method == 'GET':
-    #         reviews = product.reviews.all()
-    #         serializer = MarkActionSerializer(reviews, many=True).data
-    #         return response.Response(serializer, status=200)
-    #     else:
-    #         if product.reviews.filter(user=request.user).exists():
-    #             return response.Response('You already reviewed this product!',
-    #                                      status=400)
-    #         data = request.data  # rating text
-    #         serializer = MarkActionSerializer(data=data)
-    #         serializer.is_valid(raise_exception=True)
-    #         serializer.save(user=request.user, product=product)
-    #         return response.Response(serializer.data, status=201)
-    #
-    # # api/v1/product/id/
-    # @action(['DELETE'], detail=True)
-    # def review_delete(self, request, pk):
-    #     product = self.get_object()  # Product.objects.get(id=pk)
-    #     user = request.user
-    #     if not product.reviews.filter(user=user).exists():
-    #         return response.Response('You didn\'t reviewed this product!',
-    #                                  status=400)
-    #     review = product.reviews.get(user=user)
-    #     review.delete()
-    #     return response.Response('Successfully deleted', status=204)
