@@ -1,12 +1,14 @@
 from rest_framework import serializers
-from .models import Comment
+
+from rating.models import Mark
 
 
-class CommentSerializer(serializers.ModelSerializer):
+class MarkSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.id')
     owner_username = serializers.ReadOnlyField(source='owner.username')
 
     class Meta:
-        model = Comment
+        model = Mark
         fields = '__all__'
+
 

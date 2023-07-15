@@ -1,12 +1,12 @@
 from rest_framework import serializers
-from .models import Comment
+
+from purchase.models import Purchase
 
 
-class CommentSerializer(serializers.ModelSerializer):
+class PurchaseSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.id')
     owner_username = serializers.ReadOnlyField(source='owner.username')
 
     class Meta:
-        model = Comment
+        model = Purchase
         fields = '__all__'
-
