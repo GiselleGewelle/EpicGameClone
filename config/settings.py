@@ -45,13 +45,14 @@ INSTALLED_APPS = [
     'drf_yasg',
     'django_filters',
     'django_rest_passwordreset',
+    'corsheaders',
     # my_apps
     'account',
     'category',
     'comment',
     'like',
     'posts',
-    'corsheaders',
+    'news',
 ]
 
 MIDDLEWARE = [
