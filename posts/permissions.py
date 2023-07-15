@@ -17,9 +17,9 @@ class IsAuthorOrAdmin(permissions.BasePermission):
 
 class IsSeller(permissions.BasePermission):
     def has_permission(self, request, view):
-        return request.user.is_seller
+        return request.user.is_authenticated and request.user.is_seller
 
 
 class IsBuyer(permissions.BasePermission):
     def has_permission(self, request, view):
-        return request.user.is_buyer
+        return request.user.is_authenticated and request.user.is_buyer
