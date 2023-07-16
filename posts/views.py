@@ -27,7 +27,7 @@ from purchase.serializers import PurchaseSerializer
 from rating.models import Mark
 
 
-class PostViewSet(ModelViewSet, ):
+class PostViewSet(ModelViewSet):
     queryset = Post.objects.all()
     pagination_class = StandartResultPagination
     filter_backends = (DjangoFilterBackend, SearchFilter)
@@ -116,7 +116,7 @@ class PostViewSet(ModelViewSet, ):
     #     openapi.Parameter('likes_from', openapi.IN_QUERY, 'filter products by amount of likes', True,
     #                       type=openapi.TYPE_INTEGER)])
     @action(detail=False, methods=["GET"])
-    def likes(self, request, pk):
+    def likes(self, request, pk=''):
         from django.db.models import Count
         q = request.query_params.get("likes_from")  # request.query_params = request.GET
         queryset = self.get_queryset()

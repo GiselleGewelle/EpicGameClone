@@ -1,7 +1,9 @@
 from django.contrib.auth import get_user_model
 from django.urls.conf import path
+from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import action
+from rest_framework.filters import SearchFilter
 from rest_framework.permissions import AllowAny
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.mixins import ListModelMixin
@@ -15,6 +17,8 @@ from rest_framework import status
 from rest_framework import generics
 from rest_framework.response import Response
 from django.contrib.auth.models import User
+
+from posts.views import StandartResultPagination
 from .serializers import ChangePasswordSerializer
 from rest_framework.permissions import IsAuthenticated
 
@@ -62,6 +66,10 @@ User = get_user_model()
 
 class UserViewSet(ListModelMixin, GenericViewSet):
     queryset = User.objects.all()
+    agination_class = StandartResultPagination
+    filter_backends = (DjangoFilterBackend, SearchFilter)
+    search_fields = ('username', 'first_name')
+    filterset_fields = ('is_seller', 'is_buyer')
     serializer_class = serializers.UserSerializer
     permission_classes = (AllowAny,)
 
