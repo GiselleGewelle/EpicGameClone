@@ -13,6 +13,7 @@ from .permissions import IsAuthor, IsAuthorOrAdmin, IsSeller, IsBuyer
 from rest_framework.response import Response
 
 from .serializers import PostSerializer
+from purchase.serializers import PurchaseSerializer
 
 
 
@@ -34,6 +35,7 @@ class PostViewSet(ModelViewSet):
     search_fields = ('title_of_game', 'title_of_publisher')
     filterset_fields = ('owner', 'category')
 
+    @swagger_auto_schema(request_body=serializers.PostSerializer)
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
@@ -147,3 +149,4 @@ class PostViewSet(ModelViewSet):
         fav.favorite = not fav.favorite
         fav.save()
         return Response('favorite toggled')
+
