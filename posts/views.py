@@ -12,20 +12,20 @@ from . import serializers
 from .permissions import IsAuthor, IsAuthorOrAdmin, IsSeller, IsBuyer
 from rest_framework.response import Response
 
-from .serializers import PostSerializer
+from rating.serializers import MarkSerializer
+from purchase.models import Purchase
 from purchase.serializers import PurchaseSerializer
+from rating.models import Mark
 
+from .serializers import PostSerializer
+
+from comment.models import Comment
+from comment.serializers import CommentSerializer
 
 
 class StandartResultPagination(PageNumberPagination):
     page_size = 3
     page_query_param = 'page'
-
-
-from rating.serializers import MarkSerializer
-from purchase.models import Purchase
-from purchase.serializers import PurchaseSerializer
-from rating.models import Mark
 
 
 class PostViewSet(ModelViewSet):
@@ -150,3 +150,30 @@ class PostViewSet(ModelViewSet):
         fav.save()
         return Response('favorite toggled')
 
+    @action(detail=True, methods=['POST', 'GET'])
+    def comment(self, request, pk):
+        post = self.get_object()
+        user = request.user
+        if request.method == 'POST':
+            body = request.data.get('body')
+            if body is not None:
+                Comment.objects.create(owner=request.user, post=post, body=body)
+                return Response(status=status.HTTP_201_CREATED)
+            else:
+                return Response({'error': 'Missing or invalid "body" field in request data.'},
+                                status=status.HTTP_400_BAD_REQUEST)
+        elif request.method == 'GET':
+            comments = post.comments.all()
+            serializer = CommentSerializer(comments, many=True)
+            return Response(serializer.data)
+
+    @action(['DELETE'], detail=True)
+    def comment_delete(self, request, pk=None):
+        post = self.get_object()  # Product.objects.get(id=pk)
+        user = request.user
+        if not post.comments.filter(owner=user).exists():
+            return response.Response('You didn\'t commented this post!',
+                                     status=400)
+        comment = post.comments.get(owner=user)
+        comment.delete()
+        return response.Response('Comment successfully deleted', status=204)
