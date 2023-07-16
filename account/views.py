@@ -68,7 +68,7 @@ class UserViewSet(ListModelMixin, GenericViewSet):
     queryset = User.objects.all()
     agination_class = StandartResultPagination
     filter_backends = (DjangoFilterBackend, SearchFilter)
-    search_fields = ('username', 'first_name')
+    search_fields = ('username', 'email')
     filterset_fields = ('is_seller', 'is_buyer')
     serializer_class = serializers.UserSerializer
     permission_classes = (AllowAny,)
