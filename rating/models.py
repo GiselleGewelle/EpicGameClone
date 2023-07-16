@@ -8,7 +8,7 @@ class Mark(models.Model):
     owner = models.ForeignKey('account.CustomUser', related_name='marks', on_delete=models.CASCADE)
     post = models.ForeignKey(Post, related_name='marks', on_delete=models.CASCADE)
     mark = models.IntegerField(
-        validators=[MinValueValidator(1), MaxValueValidator(10)],
+        validators=[MinValueValidator(1), MaxValueValidator(5)],
         default=0,
         null=True,
         blank=True
