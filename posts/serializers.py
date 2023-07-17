@@ -3,7 +3,7 @@ from random import randint
 from rest_framework import serializers
 from category.models import Category
 from comment.serializers import CommentSerializer
-from posts.models import Post, PostImages
+from posts.models import Post, PostImages, Likes, Favorite
 from rating.models import Mark
 
 
@@ -52,6 +52,24 @@ class PostSerializer(serializers.ModelSerializer):
         return repr
 
 
+class LikeUserSerializer(serializers.ModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.id')
+    owner_username = serializers.ReadOnlyField(source='owner.username')
+
+    class Meta:
+        model = Likes
+        fields = '__all__'
+
+
+class FavoritesUserSerializer(serializers.ModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.id')
+    owner_username = serializers.ReadOnlyField(source='owner.username')
+
+    class Meta:
+        model = Favorite
+        fields = '__all__'
+
+
 class FavoriteListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
@@ -62,6 +80,3 @@ class FavoriteListSerializer(serializers.ModelSerializer):
         repr["author"] = instance.author.email
         repr["category"] = instance.category.title
         return repr
-
-
-

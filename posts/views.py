@@ -14,6 +14,11 @@ from rest_framework.response import Response
 
 from .serializers import PostSerializer
 
+from rating.serializers import MarkSerializer
+from purchase.models import Purchase
+from purchase.serializers import PurchaseSerializer
+from rating.models import Mark
+
 
 # class PostDeleteView(APIView):
 #     def delete(self, request, slug):
@@ -22,14 +27,8 @@ from .serializers import PostSerializer
 #         return Response("Object deleted successfully.")
 
 class StandartResultPagination(PageNumberPagination):
-    page_size = 3
+    page_size = 15
     page_query_param = 'page'
-
-
-from rating.serializers import MarkSerializer
-from purchase.models import Purchase
-from purchase.serializers import PurchaseSerializer
-from rating.models import Mark
 
 
 class PostViewSet(ModelViewSet):
@@ -117,11 +116,11 @@ class PostViewSet(ModelViewSet):
         like_obj.save()
         return Response('like toggled')
 
-    # @swagger_auto_schema(manual_parameters=[
-    #     openapi.Parameter('likes_from', openapi.IN_QUERY, 'filter products by amount of likes', True,
-    #                       type=openapi.TYPE_INTEGER)])
+    @swagger_auto_schema(manual_parameters=[
+        openapi.Parameter('likes_from', openapi.IN_QUERY, 'filter products by amount of likes', True,
+                          type=openapi.TYPE_INTEGER)])
     @action(detail=False, methods=["GET"])
-    def likes(self, request, pk=''):
+    def likes(self, request, pk=None):
         from django.db.models import Count
         q = request.query_params.get("likes_from")  # request.query_params = request.GET
         queryset = self.get_queryset()
@@ -129,6 +128,18 @@ class PostViewSet(ModelViewSet):
 
         serializer = PostSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    # @swagger_auto_schema(manual_parameters=[
+    #     openapi.Parameter('likes_from', openapi.IN_QUERY, 'filter products by amount of likes', True,
+    #                       type=openapi.TYPE_INTEGER)])
+    # @action(detail=False, methods=["GET"])
+    # def likes(self, request):
+    #     from django.db.models import Count
+    #     q = request.query_params.get("likes_from")
+    #     queryset = self.get_queryset().annotate(likes_count=Count('likes')).filter(likes_count__gte=q)
+    #
+    #     serializer = PostSerializer(queryset, many=True)
+    #     return Response(serializer.data, status=status.HTTP_200_OK)
 
     def get_serializer_context(self):
         return {'request': self.request}

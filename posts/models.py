@@ -5,6 +5,7 @@ from django.db import models
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.utils.text import slugify
+from django.contrib.postgres.fields import ArrayField
 
 from category.models import Category
 from ckeditor.fields import RichTextField
@@ -20,11 +21,11 @@ class Post(models.Model):
     name_of_developer = models.CharField(max_length=50)
     date_of_issue = models.DateField()
     short_description = RichTextField(default='', max_length=250)
-    preview = models.ImageField(upload_to='images', default=None)
+    preview = models.URLField()
     category = models.ForeignKey(Category, related_name='posts',
                                  on_delete=models.RESTRICT)
     full_description = RichTextField(default='', max_length=10000)
-    image_for_full = models.ImageField(upload_to='images')
+    image_for_full = models.URLField()
     price = models.DecimalField(max_digits=12, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -33,7 +34,7 @@ class Post(models.Model):
     link_on_instagram = models.URLField(blank=True)
     link_on_twitter = models.URLField(blank=True)
     link_on_facebook = models.URLField(blank=True)
-    video = models.FileField(upload_to='videos', default=None)
+    video = models.URLField()
 
     def __str__(self):
         return self.title_of_game
@@ -41,14 +42,13 @@ class Post(models.Model):
 
 class PostImages(models.Model):
     title = models.CharField(max_length=100, blank=True)
-    image = models.ImageField(upload_to='images/')
+    image = models.URLField(default=None)
     post = models.ForeignKey(Post, related_name='images', on_delete=models.CASCADE)
 
     def generate_name(self):
         return 'image' + str(self.id) + str(randint(100000, 999999))
 
     def save(self, *args, **kwargs):
-        self.title = self.generate_name()
         return super(PostImages, self).save(*args, **kwargs)
 
 
