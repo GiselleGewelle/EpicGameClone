@@ -56,7 +56,6 @@ INSTALLED_APPS = [
 
     'purchase',
     'rating',
-    'corsheaders',
 
 ]
 
