@@ -2,15 +2,15 @@ from random import randint
 from rest_framework import serializers
 from category.models import Category
 from comment.serializers import CommentSerializer
-from posts.models import Post, PostImages, Likes, Favorite
+from posts.models import Post, Likes, Favorite
 from rating.models import Mark
 from purchase.models import Purchase
 from django.db.models import Sum
 
-class PostImageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PostImages
-        fields = '__all__'
+# class PostImageSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = PostImages
+#         fields = '__all__'
 
 
 class PostListSerializer(serializers.ModelSerializer):
@@ -19,26 +19,26 @@ class PostListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = (
-            'id', 'owner', 'owner_email', 'title_of_game', 'price', 'date_of_issue', 'images', 'link_on_game',
+            'id', 'owner', 'owner_email', 'title_of_game', 'price', 'date_of_issue', 'link_on_game',
             'video')
 
 
 class PostSerializer(serializers.ModelSerializer):
     owner_email = serializers.ReadOnlyField(source='owner.email')
     owner = serializers.ReadOnlyField(source='owner.id')
-    images = PostImageSerializer(many=True, required=False)
+    # images = PostImageSerializer(many=True, required=False)
 
     class Meta:
         model = Post
         fields = '__all__'
-
-    def create(self, validated_data):
-        request = self.context.get('request')
-        images = request.FILES.getlist('images')
-        post = Post.objects.create(**validated_data)
-        for image in images:
-            PostImages.objects.create(image=image, post=post)
-        return post
+    #
+    # def create(self, validated_data):
+    #     request = self.context.get('request')
+    #     images = request.FILES.getlist('images')
+    #     post = Post.objects.create(**validated_data)
+    #     for image in images:
+    #         PostImages.objects.create(image=image, post=post)
+    #     return post
 
     def to_representation(self, instance):
         repr = super().to_representation(instance)
