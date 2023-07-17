@@ -1,11 +1,11 @@
 from random import randint
-
 from rest_framework import serializers
 from category.models import Category
 from comment.serializers import CommentSerializer
 from posts.models import Post, PostImages, Likes, Favorite
 from rating.models import Mark
-
+from purchase.models import Purchase
+from django.db.models import Sum
 
 class PostImageSerializer(serializers.ModelSerializer):
     class Meta:
@@ -42,9 +42,23 @@ class PostSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         repr = super().to_representation(instance)
+        # recommendations
+        category = instance.category
+        similar_posts = Post.objects.filter(category=category).exclude(id=instance.id)[:5]
+        liked_posts = Post.objects.filter(likes__user=instance.owner, likes__is_liked=True).exclude(id=instance.id)[:5]
+        recommendations = list(similar_posts) + list(liked_posts)
+
+        repr['recommendations'] = PostListSerializer(recommendations, many=True).data
         repr['comments_count'] = instance.comments.count()
         repr['comments'] = CommentSerializer(instance.comments.all(), many=True).data
         repr['likes_count'] = instance.likes.count()
+        repr['marks_count'] = instance.marks.count()
+        total_marks = instance.marks.aggregate(total=Sum('mark'))['total']
+        if total_marks is not None:
+            repr['rating'] = total_marks / repr['marks_count']
+        else:
+            repr['rating'] = None  # or set a default value
+        repr['purchase_count'] = instance.purchase.count()
         user = self.context['request'].user
         if user.is_authenticated:
             repr['is_liked'] = user.likes.filter(post=instance).exists()
