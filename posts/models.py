@@ -25,7 +25,7 @@ class Post(models.Model):
     category = models.ForeignKey(Category, related_name='posts',
                                  on_delete=models.RESTRICT)
     full_description = RichTextField(default='', max_length=10000)
-    image_for_full = models.URLField()
+    image_for_full = models.URLField(blank=True)
     price = models.DecimalField(max_digits=12, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -34,12 +34,13 @@ class Post(models.Model):
     link_on_instagram = models.URLField(blank=True)
     link_on_twitter = models.URLField(blank=True)
     link_on_facebook = models.URLField(blank=True)
-    video = models.URLField()
-    image_one = models.URLField(default='', blank=False)
-    image_two = models.URLField(default='', blank=False)
-    image_three = models.URLField(default='', blank=False)
-    image_four = models.URLField(default='', blank=False)
-    image_five = models.URLField(default='', blank=False)
+    video = models.URLField(blank=True)
+    image_one = models.URLField(default='', blank=True)
+    image_two = models.URLField(default='', blank=True)
+    image_three = models.URLField(default='', blank=True)
+    image_four = models.URLField(default='', blank=True)
+    image_five = models.URLField(default='', blank=True)
+    game_logo = models.URLField(default='', blank=True)
 
 
     def __str__(self):
