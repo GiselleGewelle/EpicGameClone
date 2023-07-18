@@ -7,6 +7,7 @@ from rating.models import Mark
 from purchase.models import Purchase
 from django.db.models import Sum
 
+
 # class PostImageSerializer(serializers.ModelSerializer):
 #     class Meta:
 #         model = PostImages
@@ -19,18 +20,22 @@ class PostListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = (
-            'id', 'owner', 'owner_email', 'title_of_game', 'price', 'date_of_issue', 'link_on_game',
-            'video')
+            'id', 'owner', 'owner_email', 'title_of_game', 'title_of_publisher', 'price', 'date_of_issue',
+            'link_on_game', 'name_of_developer', 'short_description', 'preview', 'category', 'full_description',
+            'image_for_full', 'link_on_game', 'link_on_instagram', 'link_on_twitter', 'link_on_facebook', 'image_one',
+            'image_two', 'image_three', 'image_four', 'image_five', 'game_logo', 'video')
 
 
 class PostSerializer(serializers.ModelSerializer):
     owner_email = serializers.ReadOnlyField(source='owner.email')
     owner = serializers.ReadOnlyField(source='owner.id')
+
     # images = PostImageSerializer(many=True, required=False)
 
     class Meta:
         model = Post
         fields = '__all__'
+
     #
     # def create(self, validated_data):
     #     request = self.context.get('request')
