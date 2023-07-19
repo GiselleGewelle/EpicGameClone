@@ -18,9 +18,11 @@ from rest_framework import generics
 from rest_framework.response import Response
 from django.contrib.auth.models import User
 
+from posts.serializers import LikeUserSerializer, FavoritesUserSerializer
 from posts.views import StandartResultPagination
 from .serializers import ChangePasswordSerializer
 from rest_framework.permissions import IsAuthenticated
+from posts.models import Likes
 
 
 class ChangePasswordView(generics.UpdateAPIView):
@@ -72,6 +74,20 @@ class UserViewSet(ListModelMixin, GenericViewSet):
     filterset_fields = ('is_seller', 'is_buyer')
     serializer_class = serializers.UserSerializer
     permission_classes = (AllowAny,)
+
+    @action(['GET'], detail=True)
+    def likes(self, request, pk):
+        user = request.user
+        likes = user.likes.all()
+        serializers = LikeUserSerializer(likes, many=True)
+        return Response(serializers.data, status=201)
+
+    @action(['GET'], detail=True)
+    def favorites(self, request, pk):
+        user = request.user
+        favorites = user.favorites.all()
+        serializers = FavoritesUserSerializer(favorites, many=True)
+        return Response(serializers.data, status=201)
 
     @swagger_auto_schema(request_body=serializers.RegisterSerializer)
     @action(['POST'], detail=False)

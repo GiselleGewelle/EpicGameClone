@@ -51,25 +51,25 @@ def data_save(res):
             pass
 
 
-# def main():
-#     url = get_html('https://stopgame.ru/news')
-#     soup = get_soup(url)
-#     data = get_data(soup)
-#     data_save(data)
+def main():
+    url = get_html('https://stopgame.ru/news')
+    soup = get_soup(url)
+    data = get_data(soup)
+    data_save(data)
 
 
 # if __name__ == '__main__':
 #     main()
 
 
-class Command(BaseCommand):
-    help = 'Parsing News'
-
-    def handle(self, *args, **options):
-        url = get_html('https://stopgame.ru/news')
-        soup = get_soup(url)
-        data = get_data(soup)
-        data_save(data)
+# class Command(BaseCommand):
+#     help = 'Parsing News'
+#
+#     def handle(self, *args, **options):
+#         url = get_html('https://stopgame.ru/news')
+#         soup = get_soup(url)
+#         data = get_data(soup)
+#         data_save(data)
 
 #Запуск
 #python manage.py parse_news

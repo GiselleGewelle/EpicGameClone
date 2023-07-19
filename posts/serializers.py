@@ -2,15 +2,16 @@ from random import randint
 from rest_framework import serializers
 from category.models import Category
 from comment.serializers import CommentSerializer
-from posts.models import Post, PostImages
+from posts.models import Post, Likes, Favorite
 from rating.models import Mark
 from purchase.models import Purchase
 from django.db.models import Sum
 
-class PostImageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PostImages
-        fields = '__all__'
+
+# class PostImageSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = PostImages
+#         fields = '__all__'
 
 
 class PostListSerializer(serializers.ModelSerializer):
@@ -19,26 +20,30 @@ class PostListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = (
-            'id', 'owner', 'owner_email', 'title_of_game', 'price', 'date_of_issue', 'images', 'link_on_game',
-            'video')
+            'id', 'owner', 'owner_email', 'title_of_game', 'title_of_publisher', 'price', 'date_of_issue',
+            'link_on_game', 'name_of_developer', 'short_description', 'preview', 'category', 'full_description',
+            'image_for_full', 'link_on_game', 'link_on_instagram', 'link_on_twitter', 'link_on_facebook', 'image_one',
+            'image_two', 'image_three', 'image_four', 'image_five', 'game_logo', 'video')
 
 
 class PostSerializer(serializers.ModelSerializer):
     owner_email = serializers.ReadOnlyField(source='owner.email')
     owner = serializers.ReadOnlyField(source='owner.id')
-    images = PostImageSerializer(many=True, required=False)
+
+    # images = PostImageSerializer(many=True, required=False)
 
     class Meta:
         model = Post
         fields = '__all__'
 
-    def create(self, validated_data):
-        request = self.context.get('request')
-        images = request.FILES.getlist('images')
-        post = Post.objects.create(**validated_data)
-        for image in images:
-            PostImages.objects.create(image=image, post=post)
-        return post
+    #
+    # def create(self, validated_data):
+    #     request = self.context.get('request')
+    #     images = request.FILES.getlist('images')
+    #     post = Post.objects.create(**validated_data)
+    #     for image in images:
+    #         PostImages.objects.create(image=image, post=post)
+    #     return post
 
     def to_representation(self, instance):
         repr = super().to_representation(instance)
@@ -66,6 +71,24 @@ class PostSerializer(serializers.ModelSerializer):
         return repr
 
 
+class LikeUserSerializer(serializers.ModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.id')
+    owner_username = serializers.ReadOnlyField(source='owner.username')
+
+    class Meta:
+        model = Likes
+        fields = '__all__'
+
+
+class FavoritesUserSerializer(serializers.ModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.id')
+    owner_username = serializers.ReadOnlyField(source='owner.username')
+
+    class Meta:
+        model = Favorite
+        fields = '__all__'
+
+
 class FavoriteListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
@@ -76,6 +99,3 @@ class FavoriteListSerializer(serializers.ModelSerializer):
         repr["author"] = instance.author.email
         repr["category"] = instance.category.title
         return repr
-
-
-
