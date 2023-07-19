@@ -25,6 +25,12 @@ class PostListSerializer(serializers.ModelSerializer):
             'image_for_full', 'link_on_game', 'link_on_instagram', 'link_on_twitter', 'link_on_facebook', 'image_one',
             'image_two', 'image_three', 'image_four', 'image_five', 'game_logo', 'video')
 
+    def to_representation(self, instance):
+        repr = super().to_representation(instance)
+        user = self.context['request'].user
+        if user.is_authenticated:
+            repr['is_favorite'] = user.favorites.filter(post=instance).exists()
+        return repr
 
 class PostSerializer(serializers.ModelSerializer):
     owner_email = serializers.ReadOnlyField(source='owner.email')
